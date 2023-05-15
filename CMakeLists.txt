@@ -25,7 +25,9 @@ file(GLOB SOURCES
       src/*.h
       src/*.cpp
       src/exchanges/*.cpp
-      src/utils/*.cpp)
+      src/utils/*.h
+      src/utils/*.cpp
+      )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
