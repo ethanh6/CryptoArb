@@ -2,4 +2,4 @@
 
 ## How to build & run
 
-`cmake --build build; ./build/CryptoArb`
+`./run.sh`
