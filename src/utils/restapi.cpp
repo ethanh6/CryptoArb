@@ -31,8 +31,12 @@ RestApi::RestApi(std::string host, const char *cacert, std::ostream &log)
   curl_easy_setopt(C.get(), CURLOPT_WRITEFUNCTION, recvCallback);
 }
 
-void RestApi::CURL_deleter::operator()(CURL *C) { curl_easy_cleanup(C); }
+void RestApi::CURL_deleter::operator()(CURL *c) {
+  if (c)
+    curl_easy_cleanup(c);
+}
 
 void RestApi::CURL_deleter::operator()(curl_slist *slist) {
-  curl_slist_free_all(slist);
+  if (slist)
+    curl_slist_free_all(slist);
 }

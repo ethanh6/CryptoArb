@@ -18,8 +18,11 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
 find_package(Catch2 3 REQUIRED)
 find_package(CURL)
+find_package(Jansson)
 
 file(GLOB SOURCES
       src/*.h
@@ -34,10 +37,14 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
                            ${PROJECT_SOURCE_DIR}/src
                            ${CURL_INCLUDE_DIR}
-                           ${OPENSSL_INCLUDE_DIR})
+                           ${OPENSSL_INCLUDE_DIR}
+                           ${JANSSON_INCLUDE_DIR}
+                           )
 
 target_link_libraries(${PROJECT_NAME}
                       ${CURL_LIBRARIES}
-                      ${OPENSSL_LIBRARIES})
+                      ${OPENSSL_LIBRARIES}
+                      ${JANSSON_LIBRARIES}
+                      )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/..)

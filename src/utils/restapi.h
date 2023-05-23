@@ -1,6 +1,7 @@
 #pragma once
 
 #include "curl/curl.h"
+#include "jansson.h"
 #include <iostream>
 #include <memory>
 #include <string>
@@ -22,4 +23,6 @@ private:
 public:
   RestApi(std::string host, const char *cacert = nullptr,
           std::ostream &log = std::cerr);
+  RestApi (const RestApi &) = delete;
+  RestApi& operator = (const RestApi &) = delete;
 };
