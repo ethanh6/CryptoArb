@@ -21,8 +21,10 @@ private:
   std::ostream &log;
 
 public:
+  using unique_slist = std::unique_ptr<curl_slist, CURL_deleter>;
   RestApi(std::string host, const char *cacert = nullptr,
           std::ostream &log = std::cerr);
-  RestApi (const RestApi &) = delete;
-  RestApi& operator = (const RestApi &) = delete;
+  RestApi(const RestApi &) = delete;
+  RestApi &operator=(const RestApi &) = delete;
+  json_t *getRequest(const std::string &uri, unique_slist headers = nullptr);
 };

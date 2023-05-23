@@ -117,12 +117,12 @@ Parameters::Parameters(std::string fileName) {
   binanceFees = getDouble(getParameter("BinanceFees", configFile));
   binanceEnable = getBool(getParameter("BinanceEnable", configFile));
 
-  sendEmail = getBool(getParameter("SendEmail", configFile));
-  senderAddress = getParameter("SenderAddress", configFile);
-  senderUsername = getParameter("SenderUsername", configFile);
-  senderPassword = getParameter("SenderPassword", configFile);
-  smtpServerAddress = getParameter("SmtpServerAddress", configFile);
-  receiverAddress = getParameter("ReceiverAddress", configFile);
+  // sendEmail = getBool(getParameter("SendEmail", configFile));
+  // senderAddress = getParameter("SenderAddress", configFile);
+  // senderUsername = getParameter("SenderUsername", configFile);
+  // senderPassword = getParameter("SenderPassword", configFile);
+  // smtpServerAddress = getParameter("SmtpServerAddress", configFile);
+  // receiverAddress = getParameter("ReceiverAddress", configFile);
 
   dbFile = getParameter("DBFile", configFile);
 }
