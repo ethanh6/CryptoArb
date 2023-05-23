@@ -1,6 +1,6 @@
 #include "Bitcoin.h"
-#include "utils/time_fun.h"
 #include "parameters.h"
+#include "utils/time_fun.h"
 
 #include <iostream>
 
@@ -16,16 +16,36 @@ int main(int argc, char **argv) {
 
   Parameters params("CryptoArb.conf");
 
-  // Inits cURL connections
-  params.curl = curl_easy_init();
+  // create the CSV files that collect trade results
+  std::string currDateTime = printDateTimeFileName();
+  std::string csvFileName = "output/CryptoArb_result_" + currDateTime + ".cvs";
+  std::ofstream csvFile(csvFileName, std::ofstream::trunc);
 
-  if(params.curl) {
-    std::cout << "valid" << std::endl;
-    CURLcode res;
-    curl_easy_setopt(params.curl, CURLOPT_URL, "https://example.com");
-    res = curl_easy_perform(params.curl);
-    curl_easy_cleanup(params.curl);
-  }
+  // csvFile
+  //     <<
+  //     "TRADE_ID,EXCHANGE_LONG,EXHANGE_SHORT,ENTRY_TIME,EXIT_TIME,DURATION,"
+  //     << "TOTAL_EXPOSURE,BALANCE_BEFORE,BALANCE_AFTER,RETURN" << std::endl;
+
+  // Inits cURL connections
+  // params.curl = curl_easy_init();
+  // CURLcode res;
+  // if (params.curl) {
+  //   std::string BINANCE_API =
+  //       "https://api.binance.com/api/v3/ticker/bookTicker?symbol=BTCUSDT";
+  //   curl_easy_setopt(params.curl, CURLOPT_URL, BINANCE_API);
+  //   curl_easy_setopt(params.curl, CURLOPT_WRITEDATA, (void *)&chunk);
+  //   res = curl_easy_perform(params.curl);
+  //
+  //   if (res == CURLE_OK) {
+  //     printf("Size: %lu\n", (unsigned long)chunk.size);
+  //     printf("Data: %s\n", chunk.memory);
+  //   }
+  //
+  // }
+
+  csvFile.close();
+  curl_easy_cleanup(params.curl);
+  std::cout << " >>> End of program <<<" << std::endl;
 
   return 0;
 }
