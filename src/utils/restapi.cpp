@@ -58,6 +58,8 @@ json_t *doRequest(CURL *C, const std::string &url, const curl_slist *headers,
       continue;
     }
 
+    std::cout << recvBuffer  << std::endl;
+
     return root;
   }
 }

@@ -11,7 +11,13 @@ quote_t getQuote(Parameters &params) {
 
   unique_json root{api.getRequest(x)};
 
-  std::cout << "asdf" << std::endl;
+  std::cout << json_object_size(root.get()) << std::endl;
+
+  if(json_object_get(root.get(), "bidPrice")) {
+    std::cout << "correct" << std::endl;
+  } else {
+    std::cout << "incorrect" << std::endl;
+  }
 
   double quote = atof(json_string_value(json_object_get(root.get(), "bidPrice")));
 
