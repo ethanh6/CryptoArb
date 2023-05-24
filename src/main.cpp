@@ -1,6 +1,7 @@
 #include "Bitcoin.h"
 #include "parameters.h"
 #include "utils/time_fun.h"
+#include "utils/db_fun.h"
 
 #include <iostream>
 
@@ -22,6 +23,7 @@ int main(int argc, char **argv) {
     std::cout << " >>> DemoMode <<<" << std::endl;
   }
 
+  // sanity check of the parameters
   if (params.leg1 == "BTC" and params.leg2 == "USD") {
     std::cout << " >>> trading pair: [ BTC, USD ] <<<" << std::endl;
   } else {
@@ -29,9 +31,15 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
+  // dababase connections
+  int db_status = createDbConnection(params);
+  if (db_status != 0) {
+    std::cerr << "ERROR: db connection error" << std::endl;
+  }
+
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
-  std::string csvFileName = "output/result/CryptoArb_result_" + currDateTime + ".cvs";
+  std::string csvFileName = "output/result/CryptoArb_result_" + currDateTime + ".csv";
   std::ofstream csvFile(csvFileName, std::ofstream::trunc);
   csvFile << "TRADE_ID,"
           << "EXCHANGE_LONG,"
@@ -52,10 +60,10 @@ int main(int argc, char **argv) {
 
   logFile << "--------------------------" << std::endl;
   logFile << "|   CryptoArb Log File   |" << std::endl;
-  logFile << "-------------------------|" << std::endl << std::endl;
-  logFile << "CryptoArb started time: " << printDateTime() << std::endl << std::endl;
+  logFile << "--------------------------" << '\n' << std::endl;
+  logFile << "CryptoArb started time: " << printDateTime() << '\n' << std::endl;
 
-  // logFile << "Connected to database \'" << params.dbFile << "\'\n" << std::endl;
+  logFile << "Connected to database \'" << params.dbFile << "\'\n" << std::endl;
 
   if (params.isDemoMode) {
     logFile << "Demo mode: trades won't be generated\n" << std::endl;

@@ -17,6 +17,6 @@ echo "========== clean ============="
 echo "==============================\n"
 
 cmake --build build --target clean
-rm output/log/*
-rm output/result/*
+# rm output/log/*
+# rm output/result/*
 

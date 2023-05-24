@@ -23,11 +23,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Catch2 3 REQUIRED)
 find_package(CURL)
 find_package(Jansson)
+find_package(SQLite3)
 
 file(GLOB SOURCES
       src/*.h
       src/*.cpp
       src/exchanges/*.cpp
+      src/exchanges/*.h
       src/utils/*.h
       src/utils/*.cpp
       )
@@ -39,12 +41,14 @@ target_include_directories(${PROJECT_NAME} PRIVATE
                            ${CURL_INCLUDE_DIR}
                            ${OPENSSL_INCLUDE_DIR}
                            ${JANSSON_INCLUDE_DIR}
+                           ${SQLITE3_INCLUDE_DIR}
                            )
 
 target_link_libraries(${PROJECT_NAME}
                       ${CURL_LIBRARIES}
                       ${OPENSSL_LIBRARIES}
                       ${JANSSON_LIBRARIES}
+                      ${SQLITE3_LIBRARIES}
                       )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/..)
