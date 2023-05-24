@@ -24,7 +24,8 @@ json_t *doRequest(CURL *C, const std::string &url, const curl_slist *headers,
 
     // retry if more than one attempt
     if (attempt != 0) {
-      log << "  Retry in 2 sec..." << std::endl;
+      log << "  API ERROR: Retry in 2 sec..." << std::endl;
+      std::cout << "  API ERROR: Retry in 2 sec, see log files" << std::endl;
       std::this_thread::sleep_for(std::chrono::seconds(2));
       recvBuffer.clear();
       curl_easy_setopt(C, CURLOPT_DNS_CACHE_TIMEOUT, 0);

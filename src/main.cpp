@@ -1,9 +1,12 @@
 #include "Bitcoin.h"
 #include "parameters.h"
-#include "utils/time_fun.h"
 #include "utils/db_fun.h"
+#include "utils/time_fun.h"
+
+#include "exchanges/binance.h"
 
 #include <iostream>
+#include <vector>
 
 struct Balance {
   double leg1;
@@ -12,7 +15,7 @@ struct Balance {
   double leg2After;
 };
 
-typedef quote_t (*getQuoteType)(Parameters &params);
+// typedef quote_t (*getQuoteType)(Parameters &params);
 
 int main(int argc, char **argv) {
   std::cout << " >>> CryptoArb Cryptocurrencies Arbitrage Bot <<<" << std::endl;
@@ -39,7 +42,8 @@ int main(int argc, char **argv) {
 
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
-  std::string csvFileName = "output/result/CryptoArb_result_" + currDateTime + ".csv";
+  std::string csvFileName =
+      "output/result/CryptoArb_result_" + currDateTime + ".csv";
   std::ofstream csvFile(csvFileName, std::ofstream::trunc);
   csvFile << "TRADE_ID,"
           << "EXCHANGE_LONG,"
@@ -51,7 +55,7 @@ int main(int argc, char **argv) {
           << "BALANCE_BEFORE,"
           << "BALANCE_AFTER,"
           << "RETURN" << std::endl;
-  
+
   // create log files
   std::string logFileName = "output/log/CryptoArb_log_" + currDateTime + ".log";
   std::ofstream logFile(logFileName, std::ofstream::trunc);
@@ -62,32 +66,36 @@ int main(int argc, char **argv) {
   logFile << "|   CryptoArb Log File   |" << std::endl;
   logFile << "--------------------------" << '\n' << std::endl;
   logFile << "CryptoArb started time: " << printDateTime() << '\n' << std::endl;
-
   logFile << "Connected to database \'" << params.dbFile << "\'\n" << std::endl;
 
   if (params.isDemoMode) {
     logFile << "Demo mode: trades won't be generated\n" << std::endl;
   }
 
-  logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n" << std::endl;
+  logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n"
+          << std::endl;
 
+  logFile << "[ Targets ]\n"
+          << "\tSpread Entry:  " << params.spreadEntry * 100.0 << "%\n"
+          << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n"
+          << std::endl;
 
-  // Inits cURL connections
-  // params.curl = curl_easy_init();
-  // CURLcode res;
-  // if (params.curl) {
-  //   std::string BINANCE_API =
-  //       "https://api.binance.com/api/v3/ticker/bookTicker?symbol=BTCUSDT";
-  //   curl_easy_setopt(params.curl, CURLOPT_URL, BINANCE_API);
-  //   curl_easy_setopt(params.curl, CURLOPT_WRITEDATA, (void *)&chunk);
-  //   res = curl_easy_perform(params.curl);
-  //
-  //   if (res == CURLE_OK) {
-  //     printf("Size: %lu\n", (unsigned long)chunk.size);
-  //     printf("Data: %s\n", chunk.memory);
-  //   }
-  //
-  // }
+  logFile << "[ Current Balance ]\n";
+  logFile << "[ Exposure ]\n";
+  logFile << std::endl;
+
+  // initialize curl connections
+  params.curl = curl_easy_init();
+
+  bool running = true;
+  while (running) {
+    std::cout << "while looping" << std::endl;
+    auto quote = Binance::getQuote(params);
+    double bid = quote.bid(); 
+    double ask = quote.ask(); 
+    std::cout << bid << " " << ask << std::endl;
+    running = false;
+  }
 
   csvFile.close();
   curl_easy_cleanup(params.curl);
