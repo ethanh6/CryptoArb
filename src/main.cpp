@@ -18,9 +18,9 @@ struct Balance {
 // typedef quote_t (*getQuoteType)(Parameters &params);
 
 int main(int argc, char **argv) {
-  std::cout << " >>> CryptoArb Cryptocurrencies Arbitrage Bot <<<" << std::endl;
+  std::cout << " >>> KryptoArb Cryptocurrencies Arbitrage Bot <<<" << std::endl;
 
-  Parameters params("CryptoArb.conf");
+  Parameters params("KryptoArb.conf");
 
   if (params.isDemoMode) {
     std::cout << " >>> DemoMode <<<" << std::endl;
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
   std::string csvFileName =
-      "output/result/CryptoArb_result_" + currDateTime + ".csv";
+      "output/result/KryptoArb_result_" + currDateTime + ".csv";
   std::ofstream csvFile(csvFileName, std::ofstream::trunc);
   csvFile << "TRADE_ID,"
           << "EXCHANGE_LONG,"
@@ -57,15 +57,15 @@ int main(int argc, char **argv) {
           << "RETURN" << std::endl;
 
   // create log files
-  std::string logFileName = "output/log/CryptoArb_log_" + currDateTime + ".log";
+  std::string logFileName = "output/log/KryptoArb_log_" + currDateTime + ".log";
   std::ofstream logFile(logFileName, std::ofstream::trunc);
   logFile << std::setprecision(4) << std::fixed;
   params.logFile = &logFile;
 
   logFile << "--------------------------" << std::endl;
-  logFile << "|   CryptoArb Log File   |" << std::endl;
+  logFile << "|   KryptoArb Log File   |" << std::endl;
   logFile << "--------------------------" << '\n' << std::endl;
-  logFile << "CryptoArb started time: " << printDateTime() << '\n' << std::endl;
+  logFile << "KryptoArb started time: " << printDateTime() << '\n' << std::endl;
   logFile << "Connected to database \'" << params.dbFile << "\'\n" << std::endl;
 
   if (params.isDemoMode) {
@@ -87,6 +87,7 @@ int main(int argc, char **argv) {
   // initialize curl connections
   params.curl = curl_easy_init();
 
+  // main analysis loop
   bool running = true;
   while (running) {
     std::cout << "while looping" << std::endl;

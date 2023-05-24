@@ -14,7 +14,7 @@ json_t *doRequest(CURL *C, const std::string &url, const curl_slist *headers,
                   std::ostream &log) {
   std::string recvBuffer;
 
-  curl_easy_setopt(C, CURLOPT_WRITEDATA, &recvBuffer);
+  curl_easy_setopt(C, CURLOPT_WRITEDATA, recvBuffer.c_str());
   curl_easy_setopt(C, CURLOPT_URL, url.c_str());
   curl_easy_setopt(C, CURLOPT_HTTPHEADER, headers);
   curl_easy_setopt(C, CURLOPT_DNS_CACHE_TIMEOUT, 3600);
@@ -79,7 +79,7 @@ RestApi::RestApi(std::string host, const char *cacert, std::ostream &log)
 
   curl_easy_setopt(C.get(), CURLOPT_CONNECTTIMEOUT, 10L);
   curl_easy_setopt(C.get(), CURLOPT_TIMEOUT, 20L);
-  curl_easy_setopt(C.get(), CURLOPT_USERAGENT, "CryptoArb");
+  curl_easy_setopt(C.get(), CURLOPT_USERAGENT, "KryptoArb");
   curl_easy_setopt(C.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
 
   curl_easy_setopt(C.get(), CURLOPT_WRITEFUNCTION, recvCallback);
