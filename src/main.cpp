@@ -40,6 +40,9 @@ int main(int argc, char **argv) {
     std::cerr << "ERROR: db connection error" << std::endl;
   }
 
+  // create Binance table in the db
+  createTable("binance", params);
+
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
   std::string csvFileName =
@@ -59,26 +62,24 @@ int main(int argc, char **argv) {
   // create log files
   std::string logFileName = "output/log/KryptoArb_log_" + currDateTime + ".log";
   std::ofstream logFile(logFileName, std::ofstream::trunc);
-  logFile << std::setprecision(4) << std::fixed;
+  logFile << std::setprecision(3) << std::fixed;
   params.logFile = &logFile;
 
-  logFile << "--------------------------" << std::endl;
-  logFile << "|   KryptoArb Log File   |" << std::endl;
-  logFile << "--------------------------" << '\n' << std::endl;
-  logFile << "KryptoArb started time: " << printDateTime() << '\n' << std::endl;
-  logFile << "Connected to database \'" << params.dbFile << "\'\n" << std::endl;
+  logFile << "--------------------------\n";
+  logFile << "|   KryptoArb Log File   |\n";
+  logFile << "--------------------------\n";
+  logFile << "KryptoArb started time: " << printDateTime() << "\n\n";
+  logFile << "Connected to database \'" << params.dbFile << "\'\n\n";
 
   if (params.isDemoMode) {
-    logFile << "Demo mode: trades won't be generated\n" << std::endl;
+    logFile << "Demo mode: trades won't be generated\n\n";
   }
 
-  logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n"
-          << std::endl;
+  logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n\n";
 
   logFile << "[ Targets ]\n"
           << "\tSpread Entry:  " << params.spreadEntry * 100.0 << "%\n"
-          << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n"
-          << std::endl;
+          << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n\n";
 
   logFile << "[ Current Balance ]\n";
   logFile << "[ Exposure ]\n";
@@ -87,15 +88,32 @@ int main(int argc, char **argv) {
   // initialize curl connections
   params.curl = curl_easy_init();
 
+  // time info
+  time_t rawtime = time(nullptr); // returns the current calendar time encoded
+  tm timeinfo = *localtime(&rawtime); // struct tm holding a calendar data
+
   // main analysis loop
   bool running = true;
+  time_t currTime;
+  int i = 0;
   while (running) {
-    std::cout << "while looping" << std::endl;
+    currTime = std::mktime(&timeinfo);
+
     auto quote = Binance::getQuote(params);
-    double bid = quote.bid(); 
-    double ask = quote.ask(); 
-    std::cout << bid << " " << ask << std::endl;
-    running = false;
+    double bid = quote.bid();
+    double ask = quote.ask();
+
+    // Saves bid/ask data into SQLite database
+    addBidAskToDb("Binance", printDateTimeDb(currTime), bid, ask, params);
+
+    if (params.verbose) {
+      logFile << "\tBinance (bid/ask):\t" << bid << "/" << ask << std::endl;
+    }
+
+    curl_easy_reset(params.curl);
+
+    if (++i == 5)
+      running = false;
   }
 
   csvFile.close();

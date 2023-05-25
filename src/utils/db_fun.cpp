@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <format>
 
 
 // Defines some helper overloads to ease sqlite resource management
@@ -35,8 +36,8 @@ int createDbConnection(Parameters& params) {
 
 int createTable(std::string exchangeName, Parameters& params) {
   
-  std::string query = "CREATE TABLE IF NOT EXISTS `" + exchangeName +
-                      "` (Datetime DATETIME NOT NULL, bid DECIMAL(8, 2), ask DECIMAL(8, 2));";
+  std::string query = "CREATE TABLE IF NOT EXISTS `" + exchangeName + "` (Datetime DATETIME NOT NULL, bid DECIMAL(8, 2), ask DECIMAL(8, 2));";
+
   unique_sqlerr errmsg;
   int res = sqlite3_exec(params.dbConn.get(), query.c_str(), nullptr, nullptr, acquire(errmsg));
   if (res != SQLITE_OK)
@@ -46,10 +47,8 @@ int createTable(std::string exchangeName, Parameters& params) {
 }
 
 int addBidAskToDb(std::string exchangeName, std::string datetime, double bid, double ask, Parameters& params) {
-  std::string query = "INSERT INTO `" + exchangeName +
-                      "` VALUES ('"   + datetime +
-                      "'," + std::to_string(bid) +
-                      "," + std::to_string(ask) + ");";
+  std::string query = "INSERT INTO `" + exchangeName + "` VALUES ('"   + datetime + "'," + std::to_string(bid) + "," + std::to_string(ask) + ");";
+
   unique_sqlerr errmsg;
   int res = sqlite3_exec(params.dbConn.get(), query.c_str(), nullptr, nullptr, acquire(errmsg));
   if (res != SQLITE_OK)
