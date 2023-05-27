@@ -84,6 +84,15 @@ int main(int argc, char **argv) {
           << "\tSpread Entry:  " << params.spreadEntry * 100.0 << "%\n"
           << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n\n";
 
+  // spread entry and spread target should both be positive, otherwise it'll
+  // lose money on every trade.
+  if (params.spreadEntry <= 0.0)
+    logFile << "\t\t WARNING: Spread Entry should be positive.\n";
+
+  if (params.spreadTarget <= 0.0)
+    logFile << "\t\t WARNING: Spread Target should be positive.\n";
+  logFile << std::endl;
+
   logFile << "[ Current Balance ]\n";
   logFile << "[ Exposure ]\n";
   logFile << std::endl;
