@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
   int db_status = createDbConnection(params);
   if (db_status != 0) {
     std::cerr << "ERROR: db connection error" << std::endl;
+    exit(EXIT_FAILURE);
   }
 
   // create Binance table in the db
@@ -61,6 +62,8 @@ int main(int argc, char **argv) {
 
   // create log files
   std::string logFileName = "output/log/KryptoArb_log_" + currDateTime + ".log";
+  std::cout << " >>> Log file generated: " << logFileName << " <<<\n";
+  std::cout << " >>> KryptoArb is running... <<<" << std::endl;
   std::ofstream logFile(logFileName, std::ofstream::trunc);
   logFile << std::setprecision(3) << std::fixed;
   params.logFile = &logFile;
@@ -107,19 +110,18 @@ int main(int argc, char **argv) {
     addBidAskToDb("Binance", printDateTimeDb(currTime), bid, ask, params);
 
     if (params.verbose) {
-      logFile << "\tBinance (bid/ask):\t" << bid << "/" << ask << std::endl;
+      logFile << "\tBinance (bid/ask): " << bid << " / " << ask << std::endl;
     }
 
     curl_easy_reset(params.curl);
 
-    if (++i == 5)
-      running = false;
+    running = (++i != 5);
   }
 
   csvFile.close();
   curl_easy_cleanup(params.curl);
 
-  std::cout << " >>> End of program <<<" << std::endl;
+  std::cout << " >>> KryptoArb has been correctly terminated. <<<" << std::endl;
 
   return 0;
 }
