@@ -15,8 +15,8 @@ private:
   double ask;
 
 public:
-  BasicCoin(unsigned _id, std::string _exchName, std::string _coinName,
-                    double _fees, bool _hasShort, bool _isImplemented) {}
+  BasicCoin(unsigned _id, std::string _coinName, bool _isImplemented)
+      : id(_id), coinName(_coinName), isImplemented(_isImplemented) {}
 
   void updateData(quote_t quote) {
     bid = quote.bid();

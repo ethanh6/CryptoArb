@@ -1,10 +1,12 @@
-#include "Bitcoin.h"
 #include "parameters.h"
 #include "utils/db_fun.h"
 #include "utils/time_fun.h"
 
-#include "exchanges/BasicExchange.h"
+#include "coins/Bitcoin.h"
+#include "coins/Ethereum.h"
+
 #include "exchanges/binance.h"
+#include "exchanges/kraken.h"
 
 #include <iostream>
 #include <vector>
@@ -46,12 +48,16 @@ int main(int argc, char **argv) {
     ExchangeVec.push_back(new Binance());
     createTable("binance", params);
   }
+  if (params.krakenEnable || params.isDemoMode) {
+    ExchangeVec.push_back(new Kraken());
+    createTable("kraken", params);
+  }
   // TODO: add more exchagnes
 
-
-  // std::vector<BasicCoin *> CoinVec{
-  //   new Bitcoin(),
-  // };
+  std::vector<BasicCoin *> CoinVec{
+      new Bitcoin(0, true),
+      new Ethereum(1, true),
+  };
   // TODO: add more coin
 
   // create CSV files collecting trade results
@@ -90,7 +96,7 @@ int main(int argc, char **argv) {
   logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n\n";
 
   logFile << "[ Targets ]\n"
-          << "\tSpread Entry:  " << params.spreadEntry * 100.0 << "%\n"
+          << "\tSpread Entry : " << params.spreadEntry * 100.0 << "%\n"
           << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n\n";
 
   // spread entry and spread target should both be positive, otherwise it'll
@@ -103,6 +109,9 @@ int main(int argc, char **argv) {
 
   logFile << std::endl;
 
+
+  // get balances of target coins in target exchanges
+
   logFile << "[ Current Balance ]\n";
 
   for (auto &exch : ExchangeVec) {
@@ -110,17 +119,24 @@ int main(int argc, char **argv) {
     // get balance in the exchange
     // store it in class member: balances
     exch->getAvailBalance(params);
+    logFile << "\t" << exch->getExchName() << "\n";
 
-    std::string c = "BTC";
-    auto btc_balance = exch->getBalance(c);
+    for (auto &coin : CoinVec) {
+      std::string coinName = coin->getCoinName();
+      auto bal = exch->getBalance(coinName);
 
-    logFile << "\t" << exch->getExchName();
-    if (params.isDemoMode and false) {
-      logFile << "\t N/A - demo mode\tTODO: Implement demo mode\n";
-    } else if (exch->getIsImplemented()) {
-      logFile << "\t BTC: " << btc_balance << "\n";
+      // TODO: implement demo mode
+      if (params.isDemoMode and false) {
+        logFile << "\t\t"
+                << "N/A - demo mode\tTODO: Implement demo mode\n";
+      } else if (exch->getIsImplemented()) {
+        logFile << "\t\t" << coinName << ": " << bal << "\n";
+      } else {
+        logFile << "\t\t" << "not implemented";
+      }
     }
   }
+  logFile << std::endl;
 
   logFile << "[ Exposure ]\n";
   logFile << std::endl;
