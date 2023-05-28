@@ -9,6 +9,7 @@ struct Parameters;
 class Binance : public BasicExchange {
 public:
   Binance();
-  std::string getExchName() const override ;
+  std::string getExchName() ;
+  bool getIsImplemented() const ;
   quote_t getQuote(Parameters &params) override;
 };

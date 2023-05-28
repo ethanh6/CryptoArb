@@ -6,9 +6,11 @@
 struct Parameters;
 
 class BasicExchange {
-  private:
+private:
 public:
   std::string exchName;
-  virtual std::string getExchName() const = 0;
+  bool isImplemented;
+  std::string getExchName() const { return exchName; }
+  bool getIsImplemented() const { return isImplemented; }
   virtual quote_t getQuote(Parameters &params) = 0;
 };

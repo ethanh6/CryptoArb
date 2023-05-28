@@ -5,9 +5,8 @@
 
 Binance::Binance() {
   exchName = "Binance";
+  isImplemented = true;
 }
-
-std::string Binance::getExchName() const { return exchName; }
 
 quote_t Binance::getQuote(Parameters &params) {
   RestApi api{"https://api.binance.us", params.cacert.c_str(), *params.logFile};

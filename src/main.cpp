@@ -97,9 +97,23 @@ int main(int argc, char **argv) {
 
   if (params.spreadTarget <= 0.0)
     logFile << "\t\t WARNING: Spread Target should be positive.\n";
+
   logFile << std::endl;
 
   logFile << "[ Current Balance ]\n";
+
+  for (auto &ex : ExchangeVec) {
+    logFile << "\t" << ex->getExchName() << std::endl;
+    if (params.isDemoMode) {
+      logFile << "\t\tN/A - demo mode\n"
+              << "\t\tTODO: Implement demo mode\n";
+    } else if (not ex->getIsImplemented()) {
+      logFile << "\t\tN/A - API not implemented\n";
+    } else {
+      logFile << "\t\tTODO: Implement the api\n";
+    }
+  }
+
   logFile << "[ Exposure ]\n";
   logFile << std::endl;
 
