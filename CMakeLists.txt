@@ -21,9 +21,12 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 find_package(Catch2 3 REQUIRED)
-find_package(CURL)
-find_package(Jansson)
-find_package(SQLite3)
+find_package(CURL REQUIRED)
+find_package(Jansson REQUIRED)
+find_package(SQLite3 REQUIRED)
+
+set(OPENSSL_ROOT_DIR "/opt/homebrew/opt/openssl@3")
+find_package(OpenSSL REQUIRED)
 
 file(GLOB SOURCES
       src/*.h
