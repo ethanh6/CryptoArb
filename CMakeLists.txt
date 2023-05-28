@@ -33,6 +33,8 @@ file(GLOB SOURCES
       src/*.cpp
       src/exchanges/*.cpp
       src/exchanges/*.h
+      src/coins/*.cpp
+      src/coins/*.h
       src/utils/*.h
       src/utils/*.cpp
       )
