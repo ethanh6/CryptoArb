@@ -27,7 +27,7 @@ acquire(std::unique_ptr<T, deleter> &owner) { return owner;   }
 
 int createDbConnection(Parameters& params) {
   int res = sqlite3_open(params.dbFile.c_str(), acquire(params.dbConn));
-  
+
   if (res != SQLITE_OK)
     std::cerr << sqlite3_errmsg(params.dbConn.get()) << std::endl;
 

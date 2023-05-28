@@ -3,6 +3,7 @@
 #include "utils/db_fun.h"
 #include "utils/time_fun.h"
 
+#include "exchanges/BasicExchange.h"
 #include "exchanges/binance.h"
 
 #include <iostream>
@@ -41,8 +42,14 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  // create Binance table in the db
-  createTable("binance", params);
+  // initialize exchanges object
+  std::vector<BasicExchange *> ExchangeVec{};
+
+  if (params.binanceEnable || params.isDemoMode) {
+    ExchangeVec.push_back(new Binance());
+    createTable("binance", params);
+  }
+  // add more exchagnes here
 
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
@@ -74,9 +81,8 @@ int main(int argc, char **argv) {
   logFile << "KryptoArb started time: " << printDateTime() << "\n\n";
   logFile << "Connected to database \'" << params.dbFile << "\'\n\n";
 
-  if (params.isDemoMode) {
+  if (params.isDemoMode)
     logFile << "Demo mode: trades won't be generated\n\n";
-  }
 
   logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n\n";
 
@@ -111,18 +117,20 @@ int main(int argc, char **argv) {
   while (running) {
     currTime = std::mktime(&timeinfo);
 
-    auto quote = Binance::getQuote(params);
-    double bid = quote.bid();
-    double ask = quote.ask();
+    for (auto exchange : ExchangeVec) {
+      std::string exchName = exchange->getExchName();
+      auto quote = exchange->getQuote(params);
+      double bid = quote.bid(), ask = quote.ask();
 
-    // Saves bid/ask data into SQLite database
-    addBidAskToDb("Binance", printDateTimeDb(currTime), bid, ask, params);
+      // Saves bid/ask data into SQLite database
+      addBidAskToDb(exchName, printDateTimeDb(currTime), bid, ask, params);
 
-    if (params.verbose) {
-      logFile << "\tBinance (bid/ask): " << bid << " / " << ask << std::endl;
+      if (params.verbose)
+        logFile << "\t" << exchName << " (bid/ask): " << bid << " / " << ask
+                << std::endl;
+
+      curl_easy_reset(params.curl);
     }
-
-    curl_easy_reset(params.curl);
 
     running = (++i != 5);
   }
