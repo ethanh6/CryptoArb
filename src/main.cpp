@@ -103,14 +103,13 @@ int main(int argc, char **argv) {
   logFile << "[ Current Balance ]\n";
 
   for (auto &ex : ExchangeVec) {
-    logFile << "\t" << ex->getExchName() << std::endl;
+    logFile << "\t" << ex->getExchName();
     if (params.isDemoMode) {
-      logFile << "\t\tN/A - demo mode\n"
-              << "\t\tTODO: Implement demo mode\n";
+      logFile << "\t N/A - demo mode\tTODO: Implement demo mode\n";
     } else if (not ex->getIsImplemented()) {
-      logFile << "\t\tN/A - API not implemented\n";
+      logFile << "\t\t N/A - API not implemented\n";
     } else {
-      logFile << "\t\tTODO: Implement the api\n";
+      logFile << "\t\t TODO: Implement the api\n";
     }
   }
 

@@ -96,3 +96,17 @@ json_t *RestApi::getRequest(const std::string &uri, unique_slist headers) {
   curl_easy_setopt(C.get(), CURLOPT_HTTPGET, true);
   return doRequest(C.get(), host + uri, headers.get(), log);
 }
+
+json_t *RestApi::postRequest(const std::string &uri,
+                             unique_slist headers,
+                             const std::string &post_data) {
+  curl_easy_setopt(C.get(), CURLOPT_POSTFIELDS, post_data.data());
+  curl_easy_setopt(C.get(), CURLOPT_POSTFIELDSIZE, post_data.size());
+  return doRequest(C.get(), host + uri, headers.get(), log);
+}
+
+json_t *RestApi::postRequest(const std::string &uri,
+                             const std::string &post_data) {
+
+  return postRequest(uri, nullptr, post_data);
+}
