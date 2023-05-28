@@ -7,6 +7,14 @@ Binance::Binance() {
   isImplemented = true;
 }
 
+double Binance::getBalance(std::string &currency) const {
+  auto it = std::find_if(
+      balances.cbegin(), balances.cend(),
+      [&c = currency](const acct_balance &x) -> bool { return c == x.asset; });
+
+  return it == std::end(balances) ? -1.0 : it->free;
+}
+
 quote_t Binance::getQuote(Parameters &params) {
   RestApi api{"https://api.binance.us", params.cacert.c_str(), *params.logFile};
   std::string x{"/api/v3/ticker/bookTicker?symbol=BTCUSDT"};
@@ -25,34 +33,28 @@ quote_t Binance::getQuote(Parameters &params) {
   return std::make_pair(bidValue, askValue);
 }
 
-double Binance::getAvail(Parameters &params, std::string currency) {
-  if (currency == "usd")
-    currency = "USDT";
-
+void Binance::getAvailBalance(Parameters &params) {
   unique_json root{authRequest(params, "GET", "/api/v3/account", "")};
 
-  double available = 0.0;
-  const char *currstr;
+  // currently 170 different assets
   size_t arraySize = json_array_size(json_object_get(root.get(), "balances"));
-  auto balances = json_object_get(root.get(), "balances");
+
+  // array of size 170
+  auto raw_balances = json_object_get(root.get(), "balances");
+
+  // balances is a class member
 
   for (size_t i = 0; i < arraySize; ++i) {
-    std::string tmpCurrency = json_string_value(
-        json_object_get(json_array_get(balances, i), "asset"));
-    if (tmpCurrency == currency) {
-      currstr = json_string_value(
-          json_object_get(json_array_get(balances, i), "free"));
-
-      if (currstr) {
-        available = atof(currstr);
-      } else {
-        *params.logFile << "<binance> Error with currency string" << std::endl;
-        available = -1.0;
-      }
-    }
+    std::string asset = json_string_value(
+        json_object_get(json_array_get(raw_balances, i), "asset"));
+    double free = atof(json_string_value(
+        json_object_get(json_array_get(raw_balances, i), "free")));
+    double locked = atof(json_string_value(
+        json_object_get(json_array_get(raw_balances, i), "locked")));
+    balances.emplace_back(asset, free, locked);
   }
 
-  return available;
+  return;
 }
 
 json_t *Binance::authRequest(Parameters &params, std::string method,

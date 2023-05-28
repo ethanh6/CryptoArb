@@ -16,16 +16,13 @@ struct Balance {
   double leg2After;
 };
 
-// typedef quote_t (*getQuoteType)(Parameters &params);
-
 int main(int argc, char **argv) {
   std::cout << " >>> KryptoArb Cryptocurrencies Arbitrage Bot <<<" << std::endl;
 
   Parameters params("KryptoArb.conf");
 
-  if (params.isDemoMode) {
+  if (params.isDemoMode)
     std::cout << " >>> DemoMode <<<" << std::endl;
-  }
 
   // sanity check of the parameters
   if (params.leg1 == "BTC" and params.leg2 == "USD") {
@@ -42,14 +39,20 @@ int main(int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  // initialize exchanges object
+  // initialize exchange objects
   std::vector<BasicExchange *> ExchangeVec{};
 
   if (params.binanceEnable || params.isDemoMode) {
     ExchangeVec.push_back(new Binance());
     createTable("binance", params);
   }
-  // add more exchagnes here
+  // TODO: add more exchagnes
+
+
+  // std::vector<BasicCoin *> CoinVec{
+  //   new Bitcoin(),
+  // };
+  // TODO: add more coin
 
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
@@ -102,14 +105,20 @@ int main(int argc, char **argv) {
 
   logFile << "[ Current Balance ]\n";
 
-  for (auto &ex : ExchangeVec) {
-    logFile << "\t" << ex->getExchName();
-    if (params.isDemoMode) {
+  for (auto &exch : ExchangeVec) {
+
+    // get balance in the exchange
+    // store it in class member: balances
+    exch->getAvailBalance(params);
+
+    std::string c = "BTC";
+    auto btc_balance = exch->getBalance(c);
+
+    logFile << "\t" << exch->getExchName();
+    if (params.isDemoMode and false) {
       logFile << "\t N/A - demo mode\tTODO: Implement demo mode\n";
-    } else if (not ex->getIsImplemented()) {
-      logFile << "\t\t N/A - API not implemented\n";
-    } else {
-      logFile << "\t\t TODO: Implement the api\n";
+    } else if (exch->getIsImplemented()) {
+      logFile << "\t BTC: " << btc_balance << "\n";
     }
   }
 
@@ -145,7 +154,7 @@ int main(int argc, char **argv) {
       curl_easy_reset(params.curl);
     }
 
-    running = (++i != 5);
+    running = (++i != 1);
   }
 
   csvFile.close();
