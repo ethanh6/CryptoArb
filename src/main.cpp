@@ -19,9 +19,9 @@ struct Balance {
 };
 
 int main(int argc, char **argv) {
-  std::cout << " >>> KryptoArb Cryptocurrencies Arbitrage Bot <<<" << std::endl;
+  std::cout << " >>> CryptoArb Cryptocurrencies Arbitrage Bot <<<" << std::endl;
 
-  Parameters params("KryptoArb.conf");
+  Parameters params("CryptoArb.conf");
 
   if (params.isDemoMode)
     std::cout << " >>> DemoMode <<<" << std::endl;
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
   // create CSV files collecting trade results
   std::string currDateTime = printDateTimeFileName();
   std::string csvFileName =
-      "output/result/KryptoArb_result_" + currDateTime + ".csv";
+      "output/result/CryptoArb_result_" + currDateTime + ".csv";
   std::ofstream csvFile(csvFileName, std::ofstream::trunc);
   csvFile << "TRADE_ID,"
           << "EXCHANGE_LONG,"
@@ -77,30 +77,33 @@ int main(int argc, char **argv) {
           << "RETURN" << std::endl;
 
   // create log files
-  std::string logFileName = "output/log/KryptoArb_log_" + currDateTime + ".log";
+  std::string logFileName = "output/log/CryptoArb_log_" + currDateTime + ".log";
   std::cout << " >>> Log file generated: " << logFileName << " <<<\n";
-  std::cout << " >>> KryptoArb is running... <<<" << std::endl;
+  std::cout << " >>> CryptoArb is running... <<<" << std::endl;
   std::ofstream logFile(logFileName, std::ofstream::trunc);
   logFile << std::setprecision(3) << std::fixed;
   params.logFile = &logFile;
 
   logFile << "--------------------------\n";
-  logFile << "|   KryptoArb Log File   |\n";
+  logFile << "|   CryptoArb Log File   |\n";
   logFile << "--------------------------\n";
-  logFile << "KryptoArb started time: " << printDateTime() << "\n\n";
+  logFile << "CryptoArb started time: " << printDateTime() << "\n\n";
   logFile << "Connected to database \'" << params.dbFile << "\'\n\n";
 
   if (params.isDemoMode)
     logFile << "Demo mode: trades won't be generated\n\n";
 
-  logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n\n";
+  // logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n\n";
 
-  logFile << "[ Targets ]\n"
-          << "\tSpread Entry : " << params.spreadEntry * 100.0 << "%\n"
-          << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n\n";
+  // *********************
+  // * Log profit target *
+  // *********************
 
-  // spread entry and spread target should both be positive, otherwise it'll
-  // lose money on every trade.
+  logFile << "[ Targets ]\n";
+  logFile << "\tSpread Entry : " << params.spreadEntry * 100.0 << "%\n";
+  logFile << "\tSpread Target: " << params.spreadTarget * 100.0 << "%\n\n";
+
+  // spread entry & spread target should both be +, otherwise we'll lose $
   if (params.spreadEntry <= 0.0)
     logFile << "\t\t WARNING: Spread Entry should be positive.\n";
 
@@ -109,8 +112,10 @@ int main(int argc, char **argv) {
 
   logFile << std::endl;
 
-
-  // get balances of target coins in target exchanges
+  // *****************************
+  // * Get balances of coins in  *
+  // * exchanges and log results *
+  // *****************************
 
   logFile << "[ Current Balance ]\n";
 
@@ -132,14 +137,23 @@ int main(int argc, char **argv) {
       } else if (exch->getIsImplemented()) {
         logFile << "\t\t" << coinName << ": " << bal << "\n";
       } else {
-        logFile << "\t\t" << "not implemented";
+        logFile << "\t\t"
+                << "not implemented";
       }
     }
   }
   logFile << std::endl;
 
+  // ****************
+  // * Log exposure *
+  // ****************
+
   logFile << "[ Exposure ]\n";
   logFile << std::endl;
+
+  // **********************
+  // * main analysis loop *
+  // **********************
 
   // initialize curl connections
   params.curl = curl_easy_init();
@@ -147,17 +161,15 @@ int main(int argc, char **argv) {
   // time info
   time_t rawtime = time(nullptr); // returns the current calendar time encoded
   tm timeinfo = *localtime(&rawtime); // struct tm holding a calendar data
-
-  // main analysis loop
-  bool running = true;
   time_t currTime;
-  int i = 0;
-  while (running) {
+  int i = 3;
+  bool running = true;
+  while (running and i--) {
     currTime = std::mktime(&timeinfo);
 
     for (auto exchange : ExchangeVec) {
       std::string exchName = exchange->getExchName();
-      auto quote = exchange->getQuote(params);
+      auto quote = exchange->getQuote(params, "btc");
       double bid = quote.bid(), ask = quote.ask();
 
       // Saves bid/ask data into SQLite database
@@ -169,14 +181,12 @@ int main(int argc, char **argv) {
 
       curl_easy_reset(params.curl);
     }
-
-    running = (++i != 1);
   }
 
   csvFile.close();
   curl_easy_cleanup(params.curl);
 
-  std::cout << " >>> KryptoArb has been correctly terminated. <<<" << std::endl;
+  std::cout << " >>> CryptoArb has been correctly terminated. <<<" << std::endl;
 
   return 0;
 }

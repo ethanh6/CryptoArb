@@ -77,7 +77,7 @@ RestApi::RestApi(std::string host, const char *cacert, std::ostream &log)
 
   curl_easy_setopt(C.get(), CURLOPT_CONNECTTIMEOUT, 10L);
   curl_easy_setopt(C.get(), CURLOPT_TIMEOUT, 20L);
-  curl_easy_setopt(C.get(), CURLOPT_USERAGENT, "KryptoArb");
+  curl_easy_setopt(C.get(), CURLOPT_USERAGENT, "CryptoArb");
   curl_easy_setopt(C.get(), CURLOPT_ACCEPT_ENCODING, "gzip");
 
   curl_easy_setopt(C.get(), CURLOPT_WRITEFUNCTION, recvCallback);

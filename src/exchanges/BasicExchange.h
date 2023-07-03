@@ -25,7 +25,7 @@ public:
 
   virtual double getBalance(std::string &currency) const = 0;
 
-  virtual quote_t getQuote(Parameters &params) = 0;
+  virtual quote_t getQuote(Parameters &params, std::string symbol) = 0;
 
   virtual void getAvailBalance(Parameters &params) = 0;
 

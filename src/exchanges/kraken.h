@@ -28,7 +28,7 @@ public:
   // return -1 if the currency is invalid
   double getBalance(std::string &currency) const override;
 
-  quote_t getQuote(Parameters &params) override;
+  quote_t getQuote(Parameters &params, std::string symbol) override;
 
   // get all available coin & its balance from the api
   void getAvailBalance(Parameters &params) override;

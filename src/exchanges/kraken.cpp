@@ -15,7 +15,7 @@ double Kraken::getBalance(std::string &currency) const {
   return it == std::end(balances) ? -1.0 : it->free;
 }
 
-quote_t Kraken::getQuote(Parameters &params) {
+quote_t Kraken::getQuote(Parameters &params, std::string symbol) {
   RestApi api{"https://api.binance.us", params.cacert.c_str(), *params.logFile};
   std::string x{"/api/v3/ticker/bookTicker?symbol=BTCUSDT"};
 

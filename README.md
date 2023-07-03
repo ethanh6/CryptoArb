@@ -1,4 +1,4 @@
-# KryptoArb
+# CryptoArb
 
 ## How to build & run
 
