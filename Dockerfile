@@ -53,17 +53,11 @@ COPY . .
 # Set the root password
 RUN echo 'root:0106' | chpasswd
 
-# Allow SSH user login with a password
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
 # Enable root login via SSH
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # Expose the SSH port
 EXPOSE 22
-
-# Expose the Postgresql port
-EXPOSE 5432
 
 # Start the SSH server on container startup
 ENTRYPOINT service ssh restart && bash
