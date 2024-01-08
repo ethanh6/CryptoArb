@@ -12,31 +12,30 @@ message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS: ${CMAKE_EXPORT_COMPILE_COMMANDS}"
 message(STATUS "CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS "PROJECT_SOURCE_DIR: " ${PROJECT_SOURCE_DIR})
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-find_package(Catch2 3 REQUIRED)
+# CURL
 find_package(CURL REQUIRED)
-find_package(Jansson REQUIRED)
-find_package(SQLite3 REQUIRED)
 
+# OpenSSL
 set(OPENSSL_ROOT_DIR "/opt/homebrew/opt/openssl@3")
 find_package(OpenSSL REQUIRED)
+
+# Google Test
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+
+FetchContent_MakeAvailable(googletest)
 
 file(GLOB SOURCES
       src/*.h
       src/*.cpp
-      src/exchanges/*.cpp
-      src/exchanges/*.h
-      src/coins/*.cpp
-      src/coins/*.h
-      src/utils/*.h
-      src/utils/*.cpp
+      # src/exchanges/*.cpp src/exchanges/*.h src/coins/*.cpp src/coins/*.h src/utils/*.h src/utils/*.cpp
       )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -45,15 +44,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
                            ${PROJECT_SOURCE_DIR}/src
                            ${CURL_INCLUDE_DIR}
                            ${OPENSSL_INCLUDE_DIR}
-                           ${JANSSON_INCLUDE_DIR}
-                           ${SQLITE3_INCLUDE_DIR}
                            )
 
 target_link_libraries(${PROJECT_NAME}
                       ${CURL_LIBRARIES}
                       ${OPENSSL_LIBRARIES}
-                      ${JANSSON_LIBRARIES}
-                      ${SQLITE3_LIBRARIES}
                       )
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/..)

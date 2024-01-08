@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Update the package lists and install essential tools
 RUN apt update && apt install -y \
+    sudo \
     build-essential \
     cmake \
     gdb \
@@ -15,18 +16,24 @@ RUN apt update && apt install -y \
     git \
     wget \
     curl \
-    sqlite3 \
+    libcurl4-openssl-dev \
     libssl-dev \
-    catch \
-    clang \
-    llvm \
     libboost-all-dev \
     doxygen \
     valgrind \
     cppcheck \
     ninja-build \
     python3 \
+    postgresql \
+    libgtest-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Start Postgresql
+RUN /etc/init.d/postgresql start
+
+# build googletest from source
+WORKDIR /usr/src/gtest
+RUN sudo cmake CMakeLists.txt && make && sudo cp ./lib/libgtest*.a /usr/lib
 
 # Customize the Bash prompt for root
 RUN echo 'export COLOR_USER="\[\033[34m\]"' >> /root/.bashrc \
@@ -36,8 +43,12 @@ RUN echo 'export COLOR_USER="\[\033[34m\]"' >> /root/.bashrc \
     && echo 'export COLOR_RESET="\[\033[0m\]"' >> /root/.bashrc \
     && echo 'export PS1="${COLOR_USER}\u${COLOR_RESET}:${COLOR_HOST}\h${COLOR_RESET} [ ${COLOR_PATH}\w${COLOR_RESET} ] ${COLOR_PROMPT}\$ ${COLOR_RESET}"' >> /root/.bashrc
 
-# Create Directory
-WORKDIR /root/project
+# Set working directory in the container
+WORKDIR /root/Project/CryptoArb
+RUN rm -rf build
+
+# Copy all the project files into the container
+COPY . .
 
 # Set the root password
 RUN echo 'root:0106' | chpasswd
@@ -50,6 +61,9 @@ RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/
 
 # Expose the SSH port
 EXPOSE 22
+
+# Expose the Postgresql port
+EXPOSE 5432
 
 # Start the SSH server on container startup
 ENTRYPOINT service ssh restart && bash

@@ -18,7 +18,7 @@ risks.
 
 Dependencies: <a href="https://www.openssl.org/source" target="_blank">OpenSSL</a>, <a href="http://curl.haxx.se" target="_blank">CURL</a>, <a href="http://www.sqlite.org" target="_blank">SQLite3</a>, <a href="https://cmake.org" target="_blank">CMake</a>
 
-## To start development:
+## To start development
 
 1. Build the docker image and run the container
 
@@ -40,13 +40,13 @@ cd /root/project
 git clone https://github.com/ethanh6/CryptoArb
 ```
 
-2. Build the project
+3. Build the project
 
 ```bash
 cmake -S . -B build
 ```
 
-3. Run the executable
+4. Run the executable
 
 ```bash
 ./build/CryptoArb
@@ -96,5 +96,3 @@ The trading results and activity is logged at `./output/log/CryptoArb_log_*`, an
 ## Disclaimer
 
 Use this software at your own risk. You are responsible for your own assets. Past performance does not necessarily indicate future profits. The author assumes no responsibility for the trading results.
-
-

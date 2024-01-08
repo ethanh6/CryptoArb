@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/unique_sqlite.h"
+// #include "utils/unique_sqlite.h"
 
 #include <fstream>
 #include <string>
@@ -73,7 +73,7 @@ struct Parameters {
   std::string receiverAddress;
 
   std::string dbFile;
-  unique_sqlite dbConn;
+  // unique_sqlite dbConn;
 
   Parameters(std::string fileName);
 
