@@ -16,6 +16,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+find_package(Boost REQUIRED)
+
 # CURL
 find_package(CURL REQUIRED)
 
@@ -34,6 +36,7 @@ FetchContent_MakeAvailable(googletest)
 # JSON
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
 FetchContent_MakeAvailable(json)
+# find_package(nlohmann_json 3.2.0 REQUIRED)
 
 
 file(GLOB SOURCES

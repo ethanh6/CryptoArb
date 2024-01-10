@@ -1,0 +1,107 @@
+{
+    "project_name": "CryptoArb",
+    "version": "1.0.0",
+    "author": "ethuang",
+    "description": "A sample project configuration file",
+    "license": "MIT",
+    "build": {
+      "output_directory": "dist",
+      "source_directory": "src",
+      "main_file": "main.py",
+      "dependencies": [
+        "numpy",
+        "requests"
+      ]
+    },
+    "demo_mode": true,
+    "use_exposure": true,
+    "verbose": true,
+    "CACert": "curl-ca-bundle.crt",
+    "testing": {
+      "framework": "pytest",
+      "test_directory": "tests"
+    },
+    "logging": {
+      "level": "info",
+      "file": "app.log"
+    },
+    "email": {
+        "SendEmail": false,
+        "SenderAddress": "",
+        "SenderUsername": "",
+        "SenderPassword": "",
+        "SmtpServerAddress": "",
+        "ReceiverAddress": ""
+    },
+    "database": {
+      "host": "localhost",
+      "port": 5432,
+      "username": "admin",
+      "password": "password123",
+      "database_name": "my_database"
+    },
+    "api": {
+      "base_url": "https://api.example.com",
+      "timeout": 30
+    },
+    "custom_settings": {
+      "key1": "value1",
+      "key2": "value2"
+    },
+    "exchange": {
+        "Bitfinex": {
+            "BitfinexApiKey": "",
+            "BitfinexSecretKey": "",
+            "BitfinexFees": 0.0020,
+            "BitfinexEnable": false
+        },
+
+        "OkCoin" :{
+            "OkCoinApiKey": "",
+            "OkCoinSecretKey": "",
+            "OkCoinFees": 0.0020,
+            "OkCoinEnable": false
+        },
+
+        "Bitstamp": {
+            "BitstampClientId": "",
+            "BitstampApiKey": "",
+            "BitstampSecretKey": "",
+            "BitstampFees": 0.0025,
+            "BitstampEnable": false
+        },
+
+        "Gemini": {
+            "GeminiApiKey": "",
+            "GeminiSecretKey": "",
+            "GeminiFees": 0.0025,
+            "GeminiEnable": false
+        },
+
+        "Kraken": {
+            "KrakenApiKey": "",
+            "KrakenSecretKey": "",
+            "KrakenFees": 0.0025,
+            "KrakenEnable": false
+        },
+
+        "Binance": {
+            "BinanceApiKey": "vhevIqENglPWTBQz5SExZsHBAIfTHGpV72ullzsup0k9m7G8REd6LjM0hEpQ0Rx3",
+            "BinanceSecretKey": "1a2HjUo7jg1EIGccCdCJJ8AdAIJBxfDY65aAWFEskAhqeMqvDlVrOSGUvnsk3puF",
+            "BinanceFees": "",
+            "BinanceEnable": true
+        }
+    },
+  
+    "strategy_parameter": {
+        "Interval": 3.0,
+        "SpreadEntry": 0.0080,
+        "SpreadTarget": 0.0050,
+        "PriceDeltaLimit": 0.10,
+        "TrailingSpreadLim": 0.0008,
+        "TrailingSpreadCount": 1,
+        "OrderBookFactor": 3.0,
+        "UseVolatility": false,
+        "VolatilityPeriod": 600
+    }
+}

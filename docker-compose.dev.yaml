@@ -1,0 +1,15 @@
+version: '0.1.0'
+
+# one service can start multiple containers
+services:
+
+  # defined service: cryptoarb
+  cryptoarb:
+    image: cryptoarb/dev
+    stdin_open: true
+    tty: true
+    working_dir: /root/CryptoArb
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev

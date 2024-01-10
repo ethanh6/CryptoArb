@@ -1,0 +1,6 @@
+{
+    "vim.smartRelativeLine": true,
+    "files.associations": {
+        "fstream": "cpp"
+    }
+}
