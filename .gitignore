@@ -1,7 +1,3 @@
 build/*
 output/*
-CryptoArb.db
 CryptoArb.conf
-
-# ignore vscode files
-.vscode/*
