@@ -18,38 +18,47 @@ risks.
 
 Dependencies: <a href="https://www.openssl.org/source" target="_blank">OpenSSL</a>, <a href="http://curl.haxx.se" target="_blank">CURL</a>, <a href="http://www.sqlite.org" target="_blank">SQLite3</a>, <a href="https://cmake.org" target="_blank">CMake</a>
 
-## To start development
+## Run and build with docker
 
-1. Build the docker image and run the container
+### What's included
+
+Based on ubuntu:22.04.
+
+- C++ 20
+- Compilers:
+- Buildtools: cmake
+- Other tools:
+
+### How to use the image to start development
+
+This setup bind-mounts the project file from host to the container. Any changes inside the container will be reflected to the files on the host.
+
+1. Clone the project
 
 ```bash
-# download Dockerfile from this repo
-docker build -t cpp-dev-image Dockerfile
-
-# start the container
-docker run -dit -p 2222:22 --name cpp-dev-container cpp-dev-image
-
-# ssh into the container
-ssh -p 2222 root@localhost
+git clone https://github.com/ethanh6/CryptoArb.git
 ```
 
-2. Clone the repo
+2. Build the image and start container
 
 ```bash
-cd /root/project
-git clone https://github.com/ethanh6/CryptoArb
+# inside the project
+docker compose up --detach
 ```
 
-3. Build the project
+3. Attach to container
 
 ```bash
-cmake -S . -B build
+# method 1: use vs code remote explorer, dev containers
+
+# method 2: attach via terminal
+docker exec -it cryptoarb-app /bin/bash
 ```
 
-4. Run the executable
+4. Build and run the project
 
 ```bash
-./build/CryptoArb
+rm -rf build && cmake -S . -B build && cmake --build build && ./build/CryptoArb
 ```
 
 ## Theory of Arbitrage

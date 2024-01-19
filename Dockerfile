@@ -44,14 +44,9 @@ RUN echo 'export COLOR_USER="\[\033[34m\]"' >> /root/.bashrc \
     && echo 'export PS1="${COLOR_USER}\u${COLOR_RESET}:${COLOR_HOST}\h${COLOR_RESET} [ ${COLOR_PATH}\w${COLOR_RESET} ] ${COLOR_PROMPT}\$ ${COLOR_RESET}"' >> /root/.bashrc
 
 # Set working directory in the container
-WORKDIR /root/CryptoArb
-COPY . .
-RUN rm -rf /root/CryptoArb/build ; mkdir /root/CryptoArb/build ; cd /root/CryptoArb ; cmake -S . -B build ; cmake --build build
-
-# Set the root password & enable ssh root login
-RUN echo 'root:0106' | chpasswd && \
-    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
+# WORKDIR /root/CryptoArb
+# COPY . .
+# RUN rm -rf /root/CryptoArb/build/* 
 
 #####################
 #### BUILD IMAGE ####
@@ -90,6 +85,8 @@ RUN echo 'export COLOR_USER="\[\033[34m\]"' >> /root/.bashrc \
 WORKDIR /root/CryptoArb
 COPY . .
 RUN rm -rf build ; cmake -S . -B build ; cmake --build build
+
+
 
 
 ########################

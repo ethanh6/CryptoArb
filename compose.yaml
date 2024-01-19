@@ -1,0 +1,33 @@
+version: '3.8'
+name: cryptoarb
+
+# one service can start multiple containers
+services:
+
+  # defined service: cryptoarb
+  cryptoarb:
+    container_name: cryptoarb-app
+    volumes:
+      - type: bind
+        source: .
+        target: /root/CryptoArb
+      - type: volume
+        source: db-data
+        target: /root/CryptoArb/data
+    working_dir: /root/CryptoArb
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: dev
+    tty: true
+    stdin_open: true
+
+  # postgres-db:
+  #   image: postgres
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: example
+
+volumes:
+  db-data:
+    name: "db-data"
